@@ -21,6 +21,8 @@ erDiagram
     dim_date ||--o{ fact_sales_order_item : "date_key"
     dim_date ||--o{ fact_shipment : "date_key"
     dim_date ||--o{ fact_web_session : "date_key"
+    dim_device ||--o{ fact_web_session : "device_key"
+    dim_payment_method ||--o{ fact_payment : "payment_method_key"
     dim_product ||--o{ fact_sales_order_item : "product_key"
     dim_province ||--o{ fact_sales_order : "province_key"
     dim_province ||--o{ fact_shipment : "province_key"
@@ -28,6 +30,7 @@ erDiagram
     dim_store ||--o{ fact_sales_order : "store_key"
     dim_store ||--o{ fact_sales_order_item : "store_key"
     dim_store ||--o{ fact_shipment : "store_key"
+    dim_traffic_source ||--o{ fact_web_session : "source_key"
     dim_channel {
         INTEGER channel_key PK
         INTEGER channel_id
@@ -53,6 +56,18 @@ erDiagram
         INTEGER day
         VARCHAR day_name
     }
+    dim_device {
+        INTEGER device_key PK
+        VARCHAR device
+        VARCHAR nombre
+        VARCHAR tipo
+    }
+    dim_payment_method {
+        INTEGER payment_method_key PK
+        VARCHAR method
+        VARCHAR nombre
+        VARCHAR tipo
+    }
     dim_product {
         INTEGER product_key PK
         INTEGER product_id
@@ -74,6 +89,12 @@ erDiagram
         VARCHAR name
         INTEGER address_id
     }
+    dim_traffic_source {
+        INTEGER source_key PK
+        VARCHAR source
+        VARCHAR nombre
+        VARCHAR campania
+    }
     fact_nps {
         BIGINT nps_id PK
         INTEGER date_key FK
@@ -90,7 +111,7 @@ erDiagram
         INTEGER customer_key FK
         INTEGER channel_key FK
         INTEGER store_key FK
-        VARCHAR method
+        INTEGER payment_method_key FK
         VARCHAR status
         DECIMAL amount
         TIMESTAMP paid_at
@@ -139,8 +160,8 @@ erDiagram
         BIGINT session_id PK
         INTEGER date_key FK
         INTEGER customer_key FK
-        VARCHAR source
-        VARCHAR device
+        INTEGER source_key FK
+        INTEGER device_key FK
         TIMESTAMP started_at
         TIMESTAMP ended_at
     }

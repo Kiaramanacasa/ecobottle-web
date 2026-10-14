@@ -1,0 +1,4 @@
+device_key,device,nombre,tipo
+1,desktop,Computadora,Escritorio
+2,mobile,Celular,Móvil
+3,tablet,Tablet,Móvil

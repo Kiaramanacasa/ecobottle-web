@@ -108,8 +108,8 @@ CREATE TABLE fact_web_session (
     session_id   BIGINT PRIMARY KEY,
     date_key     INTEGER REFERENCES dim_date(date_key),
     customer_key INTEGER REFERENCES dim_customer(customer_key),
-    source       VARCHAR,
-    device       VARCHAR,
+    source_key   INTEGER REFERENCES dim_traffic_source(source_key),
+    device_key   INTEGER REFERENCES dim_device(device_key),
     started_at   TIMESTAMP,
     ended_at     TIMESTAMP
 );
@@ -119,15 +119,19 @@ SELECT
     w.session_id,
     d.date_key,
     c.customer_key,
-    w.source,
-    w.device,
+    src.source_key,
+    dv.device_key,
     w.started_at,
     w.ended_at
 FROM raw.web_session AS w
 JOIN dim_date AS d
     ON d.fecha = CAST(w.started_at AS DATE)
 LEFT JOIN dim_customer AS c
-    ON c.customer_id = w.customer_id;
+    ON c.customer_id = w.customer_id
+LEFT JOIN dim_traffic_source AS src
+    ON src.source = w.source
+LEFT JOIN dim_device AS dv
+    ON dv.device = w.device;
 
 
 -- ---------------------------------------------------------------------
@@ -175,7 +179,7 @@ CREATE TABLE fact_payment (
     customer_key INTEGER REFERENCES dim_customer(customer_key),
     channel_key  INTEGER REFERENCES dim_channel(channel_key),
     store_key    INTEGER REFERENCES dim_store(store_key),
-    method       VARCHAR,
+    payment_method_key INTEGER REFERENCES dim_payment_method(payment_method_key),
     status       VARCHAR,
     amount       DECIMAL(12, 2),
     paid_at      TIMESTAMP
@@ -189,7 +193,7 @@ SELECT
     c.customer_key,
     ch.channel_key,
     s.store_key,
-    pay.method,
+    pm.payment_method_key,
     pay.status,
     pay.amount,
     pay.paid_at
@@ -203,7 +207,9 @@ LEFT JOIN dim_customer AS c
 JOIN dim_channel AS ch
     ON ch.channel_id = o.channel_id
 LEFT JOIN dim_store AS s
-    ON s.store_id = o.store_id;
+    ON s.store_id = o.store_id
+LEFT JOIN dim_payment_method AS pm
+    ON pm.method = pay.method;
 
 
 -- ---------------------------------------------------------------------

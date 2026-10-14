@@ -63,13 +63,17 @@ COPY (
             WHEN c.customer_id IS NOT NULL THEN 'Identificado'
             ELSE 'Anónimo'
         END AS tipo_usuario,
-        w.source AS origen,
-        w.device AS dispositivo
+        src.source AS origen,
+        dv.device AS dispositivo
     FROM fact_web_session AS w
     JOIN dim_date AS d
         ON d.date_key = w.date_key
     LEFT JOIN dim_customer AS c
         ON c.customer_key = w.customer_key
+    LEFT JOIN dim_traffic_source AS src
+        ON src.source_key = w.source_key
+    LEFT JOIN dim_device AS dv
+        ON dv.device_key = w.device_key
     CROSS JOIN dim_channel AS ch
     WHERE ch.code = 'ONLINE'
     ORDER BY w.session_id
@@ -114,13 +118,7 @@ COPY (
         d.fecha,
         ch.name AS canal,
         pr.name AS provincia,
-        CASE p.method
-            WHEN 'CARD'     THEN 'Tarjeta'
-            WHEN 'GATEWAY'  THEN 'Mercado Pago'
-            WHEN 'CASH'     THEN 'Efectivo'
-            WHEN 'TRANSFER' THEN 'Transferencia'
-            ELSE p.method
-        END AS metodo,
+        pm.nombre AS metodo,
         CASE p.status
             WHEN 'PAID'     THEN 'Pagado'
             WHEN 'FAILED'   THEN 'Fallido'
@@ -137,6 +135,8 @@ COPY (
         ON ch.channel_key = p.channel_key
     JOIN fact_sales_order AS o
         ON o.order_id = p.order_id
+    LEFT JOIN dim_payment_method AS pm
+        ON pm.payment_method_key = p.payment_method_key
     LEFT JOIN dim_province AS pr
         ON pr.province_key = o.province_key
     ORDER BY p.payment_id

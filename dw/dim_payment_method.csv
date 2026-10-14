@@ -1,0 +1,5 @@
+payment_method_key,method,nombre,tipo
+1,CARD,Tarjeta,Electrónico
+2,CASH,Efectivo,Efectivo
+3,GATEWAY,Mercado Pago,Electrónico
+4,TRANSFER,Transferencia,Electrónico

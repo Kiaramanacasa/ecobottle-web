@@ -150,3 +150,84 @@ SELECT
     name,
     address_id
 FROM raw.store;
+
+
+-- ---------------------------------------------------------------------
+-- DIM_TRAFFIC_SOURCE: origen de la visita web
+-- "campania" sigue el caso: las campañas en redes generan tráfico "ads"
+-- y el email genera tráfico "direct" y "referral".
+-- ---------------------------------------------------------------------
+CREATE TABLE dim_traffic_source (
+    source_key INTEGER PRIMARY KEY,
+    source     VARCHAR NOT NULL,     -- código original: ads, direct, ...
+    nombre     VARCHAR,
+    campania   VARCHAR
+);
+
+INSERT INTO dim_traffic_source
+SELECT
+    ROW_NUMBER() OVER (ORDER BY source) AS source_key,
+    source,
+    CASE source
+        WHEN 'ads'      THEN 'Anuncios'
+        WHEN 'direct'   THEN 'Directo'
+        WHEN 'organic'  THEN 'Orgánico'
+        WHEN 'referral' THEN 'Referido'
+        ELSE source
+    END AS nombre,
+    CASE source
+        WHEN 'ads'      THEN 'Redes sociales'
+        WHEN 'direct'   THEN 'Email'
+        WHEN 'referral' THEN 'Email'
+        ELSE 'Sin campaña'
+    END AS campania
+FROM (SELECT DISTINCT source FROM raw.web_session WHERE source IS NOT NULL);
+
+
+-- ---------------------------------------------------------------------
+-- DIM_DEVICE: dispositivo desde el que se navegó
+-- ---------------------------------------------------------------------
+CREATE TABLE dim_device (
+    device_key INTEGER PRIMARY KEY,
+    device     VARCHAR NOT NULL,     -- código original: mobile, desktop, tablet
+    nombre     VARCHAR,
+    tipo       VARCHAR               -- Móvil / Escritorio
+);
+
+INSERT INTO dim_device
+SELECT
+    ROW_NUMBER() OVER (ORDER BY device) AS device_key,
+    device,
+    CASE device
+        WHEN 'mobile'  THEN 'Celular'
+        WHEN 'desktop' THEN 'Computadora'
+        WHEN 'tablet'  THEN 'Tablet'
+        ELSE device
+    END AS nombre,
+    CASE WHEN device = 'desktop' THEN 'Escritorio' ELSE 'Móvil' END AS tipo
+FROM (SELECT DISTINCT device FROM raw.web_session WHERE device IS NOT NULL);
+
+
+-- ---------------------------------------------------------------------
+-- DIM_PAYMENT_METHOD: medio de pago (GATEWAY = Mercado Pago)
+-- ---------------------------------------------------------------------
+CREATE TABLE dim_payment_method (
+    payment_method_key INTEGER PRIMARY KEY,
+    method             VARCHAR NOT NULL,   -- código original: CARD, GATEWAY, ...
+    nombre             VARCHAR,
+    tipo               VARCHAR             -- Electrónico / Efectivo
+);
+
+INSERT INTO dim_payment_method
+SELECT
+    ROW_NUMBER() OVER (ORDER BY method) AS payment_method_key,
+    method,
+    CASE method
+        WHEN 'CARD'     THEN 'Tarjeta'
+        WHEN 'GATEWAY'  THEN 'Mercado Pago'
+        WHEN 'CASH'     THEN 'Efectivo'
+        WHEN 'TRANSFER' THEN 'Transferencia'
+        ELSE method
+    END AS nombre,
+    CASE WHEN method = 'CASH' THEN 'Efectivo' ELSE 'Electrónico' END AS tipo
+FROM (SELECT DISTINCT method FROM raw.payment WHERE method IS NOT NULL);
