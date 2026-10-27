@@ -53,7 +53,7 @@ COPY (
 COPY (
     SELECT
         w.session_id,
-        strftime(d.fecha, '%Y%m%d') AS fecha,
+        d.fecha,
         ch.name AS canal,
         CASE
             WHEN c.customer_id IS NOT NULL THEN 'C-' || c.customer_id
@@ -63,6 +63,7 @@ COPY (
             WHEN c.customer_id IS NOT NULL THEN 'Identificado'
             ELSE 'Anónimo'
         END AS tipo_usuario,
+        CASE WHEN c.customer_id IS NOT NULL THEN 1 ELSE 0 END AS identificada,
         src.source AS origen,
         dv.device AS dispositivo
     FROM fact_web_session AS w
@@ -95,7 +96,12 @@ COPY (
             ELSE 'Detractor'
         END AS categoria,
         CASE WHEN n.score >= 9 THEN 1 ELSE 0 END AS promotor,
-        CASE WHEN n.score <= 6 THEN 1 ELSE 0 END AS detractor
+        CASE WHEN n.score <= 6 THEN 1 ELSE 0 END AS detractor,
+        CASE
+            WHEN n.score >= 9 THEN 100
+            WHEN n.score <= 6 THEN -100
+            ELSE 0
+        END AS nps_valor
     FROM fact_nps AS n
     JOIN dim_date AS d
         ON d.date_key = n.date_key
@@ -176,3 +182,30 @@ COPY (
         ON st.store_key = s.store_key
     ORDER BY s.shipment_id
 ) TO 'dw/tablero_envios.csv' (HEADER);
+
+
+-- ---------------------------------------------------------------------
+-- TABLERO_PEDIDOS: una fila por pedido cobrado (PAID o FULFILLED).
+-- El ticket promedio es el PROMEDIO de total_pedido: así la medida
+-- queda calculada en SQL y el tablero solo la agrega.
+-- ---------------------------------------------------------------------
+COPY (
+    SELECT
+        o.order_id,
+        d.fecha,
+        ch.name AS canal,
+        pr.name AS provincia,
+        COALESCE(st.name, 'Online') AS tienda,
+        o.total_amount AS total_pedido
+    FROM fact_sales_order AS o
+    JOIN dim_date AS d
+        ON d.date_key = o.date_key
+    JOIN dim_channel AS ch
+        ON ch.channel_key = o.channel_key
+    LEFT JOIN dim_province AS pr
+        ON pr.province_key = o.province_key
+    LEFT JOIN dim_store AS st
+        ON st.store_key = o.store_key
+    WHERE o.status IN ('PAID', 'FULFILLED')
+    ORDER BY o.order_id
+) TO 'dw/tablero_pedidos.csv' (HEADER);
