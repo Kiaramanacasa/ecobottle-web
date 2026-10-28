@@ -52,7 +52,7 @@ El data warehouse sigue el modelo dimensional de Kimball: **6 tablas de hechos**
 - **Todas las medidas se calculan en SQL.** Por requisito de la cátedra, Data Studio no tiene fórmulas ni campos calculados: solo agrega (suma, media, recuento distinto) y muestra. `sql/04_tablero.sql` deja cada medida ya calculada en 7 tablas planas.
 - **Ventas = pedidos cobrados.** Ventas, ticket promedio y rankings consideran solo pedidos con estado PAID o FULFILLED. Se excluyen CREATED, CANCELLED y REFUNDED.
 - **Venta neta** es la venta sin IVA.
-- **Usuarios activos** son los clientes identificados con al menos una sesión web.
+- **Usuarios activos.** En el tablero son los usuarios distintos de las sesiones web: clientes identificados (por `customer_id`) más cada sesión anónima (por `session_id`), según la consigna. Da 73,8 mil. La consulta KPI 2 de `03_consultas.sql` cuenta solo clientes identificados y da 3.077.
 - **NPS** es el porcentaje de promotores (9 a 10) menos el porcentaje de detractores (0 a 6).
 - **Sesiones solo online.** Las tiendas físicas no tienen sesiones web, por eso con ese canal filtrado los usuarios dan 0.
 - **Período analizado:** enero 2024 a septiembre 2025.
@@ -152,7 +152,7 @@ Las consultas de control y KPIs están en [`sql/03_consultas.sql`](sql/03_consul
 | KPI | Definición | Valor de control |
 |---|---|---|
 | 1. Ventas totales | Suma de ventas de pedidos cobrados | $382,41 M |
-| 2. Usuarios activos | Clientes identificados con al menos una sesión web | 73,8 mil |
+| 2. Usuarios activos | Tablero: identificados + sesiones anónimas. SQL: solo clientes identificados con sesión web | Tablero 73,8 mil. SQL (KPI 2): 3.077 |
 | 3. Ticket promedio | Ventas / cantidad de pedidos | $34,77 mil |
 | 4. NPS | % promotores (9 a 10) menos % detractores (0 a 6) | 30,0 |
 | 5. Ventas por provincia | Ventas agrupadas por provincia | Buenos Aires $142,7 M, Córdoba $89,54 M, Santa Fe $87,55 M, Mendoza $62,63 M |
