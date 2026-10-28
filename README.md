@@ -145,6 +145,44 @@ Las 7 tablas planas de `dw/tablero_*.csv` se generan en `sql/04_tablero.sql`. To
 | `frecuencia` | "Sin compras", "1 compra", "2 a 3 compras" o "4 o más compras" |
 | `segmento_valor` | "Top 20 % de clientes" (primer quintil) o "Resto de clientes" |
 
+## Diccionario del modelo estrella
+
+Las transformaciones están escritas en SQL (`sql/01_dimensiones.sql` y `sql/02_hechos.sql`) y las ejecuta `run_sql.py`, siguiendo la estructura de la plantilla de la cátedra, en lugar de scripts `.py` sueltos. Cada tabla se guarda como CSV en `dw/`. Las dimensiones usan una clave sustituta (`*_key`) y conservan el id de origen. Los hechos referencian las dimensiones con claves foráneas (FK).
+
+### Dimensiones (PK = clave sustituta `*_key`)
+
+| Tabla | Columnas (tipo) | Significado |
+|---|---|---|
+| `dim_channel` | `channel_key` INTEGER PK, `channel_id` INTEGER, `code` VARCHAR, `name` VARCHAR | Canales de venta: ONLINE y OFFLINE |
+| `dim_customer` | `customer_key` INTEGER PK, `customer_id` INTEGER, `email`, `first_name`, `last_name`, `phone` VARCHAR, `status` VARCHAR, `created_at` TIMESTAMP | Clientes. `status`: A (activo) o I (dado de baja) |
+| `dim_date` | `date_key` INTEGER PK, `fecha` DATE, `year` INTEGER, `month` INTEGER, `month_name` VARCHAR, `day` INTEGER, `day_name` VARCHAR | Calendario. `date_key` tiene formato AAAAMMDD |
+| `dim_device` | `device_key` INTEGER PK, `device`, `nombre`, `tipo` VARCHAR | Dispositivo de la sesión: desktop (Computadora, Escritorio), mobile (Celular, Móvil), tablet (Tablet, Móvil) |
+| `dim_payment_method` | `payment_method_key` INTEGER PK, `method`, `nombre`, `tipo` VARCHAR | Medio de pago: CARD (Tarjeta), CASH (Efectivo), GATEWAY (Mercado Pago), TRANSFER (Transferencia). `tipo` es Electrónico o Efectivo |
+| `dim_product` | `product_key` INTEGER PK, `product_id` INTEGER, `sku`, `name`, `category`, `family` VARCHAR, `list_price` DECIMAL(12,2) | Productos (Classic A y Sport B), con categoría y familia. El precio de lista no incluye IVA |
+| `dim_province` | `province_key` INTEGER PK, `province_id` INTEGER, `name`, `code` VARCHAR | Provincias: Buenos Aires, Córdoba, Santa Fe y Mendoza |
+| `dim_store` | `store_key` INTEGER PK, `store_id` INTEGER, `name` VARCHAR, `address_id` INTEGER | Las 4 tiendas físicas. `address_id` es el id de origen de la dirección |
+| `dim_traffic_source` | `source_key` INTEGER PK, `source`, `nombre`, `campania` VARCHAR | Origen del tráfico: ads (Redes sociales), direct (Email), organic (Sin campaña), referral (Email) |
+
+### Hechos (PK = id de origen)
+
+| Tabla | Grano | PK | FK | Medidas y atributos (tipo) |
+|---|---|---|---|---|
+| `fact_sales_order` | un pedido | `order_id` BIGINT | `date_key`, `customer_key`, `channel_key`, `store_key`, `province_key` | `subtotal`, `tax_amount`, `shipping_fee`, `total_amount` DECIMAL(12,2); `status` VARCHAR |
+| `fact_sales_order_item` | un producto dentro de un pedido | `order_item_id` BIGINT | `date_key`, `product_key`, `customer_key`, `channel_key`, `store_key` | `order_id` BIGINT; `quantity` INTEGER; `unit_price`, `discount_amount`, `line_total` DECIMAL(12,2) |
+| `fact_web_session` | una sesión web | `session_id` BIGINT | `date_key`, `customer_key`, `source_key`, `device_key` | `started_at`, `ended_at` TIMESTAMP |
+| `fact_nps` | una respuesta de la encuesta | `nps_id` BIGINT | `date_key`, `customer_key`, `channel_key` | `score` INTEGER; `comment` VARCHAR; `responded_at` TIMESTAMP |
+| `fact_payment` | un pago | `payment_id` BIGINT | `date_key`, `customer_key`, `channel_key`, `store_key`, `payment_method_key` | `order_id` BIGINT; `status` VARCHAR; `amount` DECIMAL(12,2); `paid_at` TIMESTAMP |
+| `fact_shipment` | un envío | `shipment_id` BIGINT | `date_key`, `customer_key`, `channel_key`, `store_key`, `province_key` | `order_id` BIGINT; `carrier`, `status` VARCHAR; `shipped_at`, `delivered_at` TIMESTAMP; `delivery_days` INTEGER |
+
+### Dominios
+
+- `fact_sales_order.status`: CREATED, PAID, CANCELLED, FULFILLED o REFUNDED. Solo PAID y FULFILLED cuentan como venta.
+- `fact_payment.status`: PENDING, PAID, FAILED o REFUNDED.
+- `fact_shipment.status`: READY, SHIPPED, DELIVERED o CANCELLED.
+- `fact_nps.score`: de 0 a 10. Promotor de 9 a 10, pasivo de 7 a 8 y detractor de 0 a 6.
+- `store_key` vacío en los pedidos online. `customer_key` vacío en las sesiones y respuestas NPS anónimas.
+- `order_id` en ítems, pagos y envíos conserva el id de origen y no es una FK hacia otra tabla del modelo.
+
 ## Consultas clave
 
 Las consultas de control y KPIs están en [`sql/03_consultas.sql`](sql/03_consultas.sql). Todas cuentan solo pedidos cobrados (PAID o FULFILLED). Los valores de control corresponden al período completo (ene 2024 a sept 2025) y coinciden con los del tablero.
