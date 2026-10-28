@@ -185,9 +185,9 @@ WHERE status IN ('PAID', 'FULFILLED');
 -- KPI 4 — NPS (% promotores 9-10 menos % detractores 0-6)
 SELECT
     (
-        SUM(CASE WHEN score >= 9 THEN 1 ELSE 0 END) * 100.0 / COUNT()
+        SUM(CASE WHEN score >= 9 THEN 1 ELSE 0 END) * 100.0 / COUNT(*)
         -
-        SUM(CASE WHEN score <= 6 THEN 1 ELSE 0 END) * 100.0 / COUNT()
+        SUM(CASE WHEN score <= 6 THEN 1 ELSE 0 END) * 100.0 / COUNT(*)
     ) AS nps
 FROM fact_nps;
 
