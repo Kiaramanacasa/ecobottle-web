@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>EcoBottle AR: tablero comercial</title>
+  <title>EcoBottle AR: ventas en botellas</title>
   <meta name="description" content="Ventas, clientes y operación de EcoBottle AR entre enero de 2024 y septiembre de 2025.">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💧</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -111,15 +111,8 @@
   </main>
 
   <footer class="pie">
-    <h2>De dónde sale cada número</h2>
-    <ol class="tuberia">
-      <li><strong>raw/</strong><span>CSV de origen, sin tocar</span></li>
-      <li><strong>sql/</strong><span>transformaciones en DuckDB (ELT)</span></li>
-      <li><strong>dw/modelo_estrella/</strong><span>dimensiones y hechos</span></li>
-      <li><strong>dw/mart/</strong><span>marts con las medidas ya calculadas</span></li>
-      <li><strong>web/</strong><span>esta página: lee los marts y los dibuja</span></li>
-    </ol>
-    <p>Esta página no calcula ninguna medida. Totales, porcentajes, rankings y niveles de llenado vienen de <code>sql/05_marts.sql</code>.</p>
+    <p>EcoBottle AR, enero 2024 a septiembre 2025.</p>
+    <a href="https://github.com/Kiaramanacasa/ecobottle-web">Ver el código en GitHub</a>
   </footer>
 
   <div class="tooltip" id="tooltip" role="status" hidden></div>

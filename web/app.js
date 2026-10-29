@@ -2,7 +2,7 @@
    EcoBottle AR: visualización
    ---------------------------------------------------------------------
    Esta página NO calcula medidas. Lee los data marts de dw/mart/
-   (generados por sql/05_marts.sql) y los dibuja. Lo único que hace JS
+   (generados por sql/04_marts.sql) y los dibuja. Lo único que hace JS
    es dar formato a los números y convertir valores en posiciones de
    pantalla (por ejemplo, el "nivel" 0 a 1 en la altura del agua).
    ===================================================================== */

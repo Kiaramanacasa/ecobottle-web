@@ -16,7 +16,6 @@ Cada vez que se arma el data warehouse:
   3. Exporta cada tabla creada a dw/, separada en dos carpetas:
        dw/modelo_estrella/  las dimensiones (dim_) y los hechos (fact_)
        dw/mart/             los data marts (mart_), que leen del modelo estrella
-     Los marts tablero_ los escribe directamente sql/04_tablero.sql en dw/mart/.
   4. Genera dw/modelo_estrella/modelo_estrella.md con el diagrama del modelo.
 
 La interfaz del navegador necesita internet. Sin conexión se abre una consola SQL en la terminal.

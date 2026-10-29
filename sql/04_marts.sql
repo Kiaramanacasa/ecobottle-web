@@ -1,5 +1,5 @@
 -- =====================================================================
--- 05_marts.sql — Data marts agregados para la visualización web
+-- 04_marts.sql — Data marts para la visualización web
 -- =====================================================================
 -- Leen SOLO del modelo estrella (dim_ y fact_), nunca de raw.
 -- Cada mart trae las medidas YA CALCULADAS: totales, porcentajes,
@@ -170,8 +170,8 @@ ORDER BY ranking;
 
 -- ---------------------------------------------------------------------
 -- MART_PRODUCTOS_MENSUAL: una fila por producto y mes, con su ranking.
--- Las ventas de cada línea se prorratean al total del pedido (igual que
--- en tablero_ventas) para que la suma coincida con las ventas totales.
+-- Las ventas de cada línea se prorratean al total del pedido para que
+-- la suma coincida con las ventas totales.
 -- ---------------------------------------------------------------------
 CREATE TABLE mart_productos_mensual AS
 WITH por_mes AS (

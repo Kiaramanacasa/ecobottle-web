@@ -431,42 +431,16 @@ main { max-width: 1180px; margin: 0 auto; padding: 0 clamp(1.25rem, 4vw, 3rem); 
 .pie {
   max-width: 1180px;
   margin: clamp(4rem, 9vw, 7rem) auto 0;
-  padding: 2.5rem clamp(1.25rem, 4vw, 3rem) 3.5rem;
-  border-top: 2px solid var(--linea);
-}
-.pie p { color: var(--tinta-suave); margin-top: 1.4rem; }
-.tuberia {
-  list-style: none;
-  margin: 1.4rem 0 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 0;
-}
-.tuberia li {
-  position: relative;
-  padding: 0.9rem 1rem 0.9rem 0;
-  border-top: 8px solid var(--agua-online);
+  padding: 1.6rem clamp(1.25rem, 4vw, 3rem) 2.4rem;
   display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.6rem 2rem;
   font-size: 0.9rem;
   color: var(--tinta-suave);
 }
-.tuberia li:nth-child(n+4) { border-top-color: var(--agua-tiendas); }
-.tuberia li:last-child { border-top-color: var(--sol); }
-.tuberia li::before {
-  content: "";
-  position: absolute;
-  top: -13px;
-  left: 0;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: var(--fondo);
-  border: 3px solid var(--tinta);
-}
-.tuberia strong { color: var(--tinta); font-family: var(--display); font-weight: 600; font-size: 0.85rem; padding-top: 0.6rem; }
+.pie p { margin: 0; }
+.pie a { color: var(--agua-online); font-weight: 600; text-decoration-thickness: 1px; text-underline-offset: 3px; }
 
 /* ---------------------------------------------------------------------
    Tooltip y error
@@ -497,12 +471,6 @@ main { max-width: 1180px; margin: 0 auto; padding: 0 clamp(1.25rem, 4vw, 3rem); 
   .hero, .dos-columnas, .clientes-grid { grid-template-columns: minmax(0, 1fr); }
   .hero-botella { max-width: 360px; margin: 0 auto; }
   .tres-paneles { grid-template-columns: minmax(0, 1fr); }
-  .tuberia { grid-template-columns: minmax(0, 1fr); gap: 0.4rem; }
-  .tuberia li { border-top: 0; border-left: 8px solid var(--agua-online); padding: 0.4rem 0 0.4rem 1rem; }
-  .tuberia li:nth-child(n+4) { border-left-color: var(--agua-tiendas); }
-  .tuberia li:last-child { border-left-color: var(--sol); }
-  .tuberia li::before { display: none; }
-  .tuberia strong { padding-top: 0; }
 }
 @media (max-width: 520px) {
   .kpis { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1rem; }
