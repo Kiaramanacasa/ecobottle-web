@@ -2,7 +2,17 @@
 
 Trabajo final de **Introducción al Marketing Online y los Negocios Digitales**. Con los datos de EcoBottle AR (botellas reutilizables, tienda online y 4 tiendas físicas) se armó un data warehouse con modelo estrella en DuckDB y un tablero en Data Studio (antes Looker Studio).
 
-**Tablero público:** [EcoBottle AR - Tablero comercial](https://datastudio.google.com/reporting/dc87b35f-c897-49d4-818d-42b6b144ff51)
+**Visualización web (HTML, CSS y JS):** [kiaramanacasa.github.io/ecobottle-web](https://kiaramanacasa.github.io/ecobottle-web/)
+
+**Tablero en Data Studio:** [EcoBottle AR - Tablero comercial](https://datastudio.google.com/reporting/dc87b35f-c897-49d4-818d-42b6b144ff51)
+
+## Arquitectura
+
+```
+raw/  →  sql/ (ELT en DuckDB)  →  dw/modelo_estrella/  →  dw/mart/  →  web/  →  GitHub Pages
+```
+
+Los datos de origen (`raw/`) se cargan en DuckDB y se transforman con SQL. El resultado se guarda en `dw/`, que separa el **modelo estrella** (dimensiones y hechos) de los **data marts**, que se leen del modelo estrella. La visualización web lee solo los marts y no calcula ninguna medida: todas vienen calculadas desde SQL.
 
 ![Página 1: Resumen comercial](assets/pagina1_resumen_comercial.png)
 ![Página 2: Clientes y operación](assets/pagina2_clientes_operacion.png)
@@ -16,10 +26,15 @@ sql/               transformaciones en SQL, en orden de ejecución:
   01_dimensiones.sql   crea las 9 dimensiones
   02_hechos.sql        crea las 6 tablas de hechos
   03_consultas.sql     consultas clave de análisis
-  04_tablero.sql       genera las 7 tablas planas del tablero
+  04_tablero.sql       genera los 7 marts detallados para Data Studio (tablero_*)
+  05_marts.sql         genera los 11 marts agregados para la web (mart_*)
 run_sql.py         ejecuta los archivos de sql/ y arma el data warehouse
 requirements.txt   dependencias de Python (DuckDB)
-dw/                salida: dimensiones, hechos, tablas del tablero (CSV) y modelo_estrella.md
+dw/                salida del data warehouse (CSV):
+  modelo_estrella/     dimensiones (dim_), hechos (fact_) y modelo_estrella.md
+  mart/                data marts: tablero_* (Data Studio) y mart_* (web)
+web/               visualización: index.html, styles.css y app.js
+index.html         redirige a web/ (portada de GitHub Pages)
 assets/            capturas del tablero, modelo estrella y DER de origen
 generator/         programa que creó los datos de raw/ (no hace falta usarlo)
 ```
@@ -29,21 +44,29 @@ generator/         programa que creó los datos de raw/ (no hace falta usarlo)
 Requiere Python 3 y Git. Desde la Terminal:
 
 ```
-git clone https://github.com/Kiaramanacasa/practica-imond.git
-cd practica-imond
+git clone https://github.com/Kiaramanacasa/ecobottle-web.git
+cd ecobottle-web
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 python3 run_sql.py
 ```
 
-Esto crea `warehouse.duckdb` desde cero (no se sube a GitHub), regenera los CSV de `dw/` y redibuja `dw/modelo_estrella.md`. Las tablas `dw/tablero_*.csv` son las que se cargan en una planilla de Google Sheets y alimentan el tablero.
+Esto crea `warehouse.duckdb` desde cero (no se sube a GitHub), regenera los CSV de `dw/modelo_estrella/` y `dw/mart/` y redibuja `dw/modelo_estrella/modelo_estrella.md`. Las tablas `dw/mart/tablero_*.csv` se cargan en una planilla de Google Sheets y alimentan el tablero de Data Studio. Las tablas `dw/mart/mart_*.csv` alimentan la visualización web.
+
+Para ver la visualización web en la computadora (el navegador no deja leer los CSV si se abre el archivo con doble clic):
+
+```
+python3 -m http.server
+```
+
+y entrar a `http://localhost:8000/web/`.
 
 ## Modelo estrella
 
 ![Modelo estrella](assets/modelo_estrella.png)
 
-*La imagen es ancha: hacé clic para verla en tamaño completo. El diagrama editable está en [`dw/modelo_estrella.md`](dw/modelo_estrella.md).*
+*La imagen es ancha: hacé clic para verla en tamaño completo. El diagrama editable está en [`dw/modelo_estrella/modelo_estrella.md`](dw/modelo_estrella/modelo_estrella.md).*
 
 El data warehouse sigue el modelo dimensional de Kimball: **6 tablas de hechos** (pedidos, ítems de pedido, sesiones web, NPS, pagos y envíos) rodeadas por **9 dimensiones** (producto, fecha, canal, provincia, cliente, tienda, origen de tráfico, dispositivo y medio de pago). Se validó que cada hecho tiene las mismas filas que su tabla de origen, que las ventas por provincia suman el total y que los pagos están conciliados con las ventas.
 
@@ -61,7 +84,7 @@ El data warehouse sigue el modelo dimensional de Kimball: **6 tablas de hechos**
 
 ## Diccionario de datos
 
-Las 7 tablas planas de `dw/tablero_*.csv` se generan en `sql/04_tablero.sql`. Todas las medidas ya vienen calculadas: Data Studio solo las suma, promedia o cuenta. `fecha`, `canal`, `provincia` y `tienda` salen de las dimensiones del modelo estrella.
+Las 7 tablas planas de `dw/mart/tablero_*.csv` se generan en `sql/04_tablero.sql`. Todas las medidas ya vienen calculadas: Data Studio solo las suma, promedia o cuenta. `fecha`, `canal`, `provincia` y `tienda` salen de las dimensiones del modelo estrella.
 
 ### tablero_ventas (una fila por producto vendido)
 
@@ -145,9 +168,27 @@ Las 7 tablas planas de `dw/tablero_*.csv` se generan en `sql/04_tablero.sql`. To
 | `frecuencia` | "Sin compras", "1 compra", "2 a 3 compras" o "4 o más compras" |
 | `segmento_valor` | "Top 20 % de clientes" (primer quintil) o "Resto de clientes" |
 
+### Marts agregados para la web (`dw/mart/mart_*.csv`)
+
+Se generan en `sql/05_marts.sql`, leyendo solo de las dimensiones y los hechos. Traen las medidas ya calculadas (totales, porcentajes, rankings, promedios y el nivel de llenado de cada botella), así la página solo las muestra.
+
+| Mart | Una fila por… | Qué muestra en la web |
+|---|---|---|
+| `mart_kpis` | período completo | Ventas totales, usuarios activos, ticket promedio, NPS, IVA, pedidos concretados |
+| `mart_ventas_mensual` | mes | La góndola de botellas: ventas por mes y por canal, mejor mes, mes promedio |
+| `mart_ventas_canal` | canal | Las capas de la botella principal |
+| `mart_ventas_provincia` | provincia | Ranking de provincias |
+| `mart_productos_mensual` | producto y mes | Producto del mes, con su ranking |
+| `mart_nps_mensual` | mes | Línea del NPS y su composición |
+| `mart_pagos_metodo` | medio de pago | Tasa de pagos fallidos |
+| `mart_trafico` | origen y dispositivo | De qué dispositivo llega cada visita |
+| `mart_entregas` | provincia y año | Días hasta la entrega |
+| `mart_estados_pedido` | estado del pedido | Cómo terminan los pedidos |
+| `mart_clientes` | grupo y categoría | Frecuencia, top 20 % y recompras |
+
 ## Diccionario del modelo estrella
 
-Las transformaciones están escritas en SQL (`sql/01_dimensiones.sql` y `sql/02_hechos.sql`) y las ejecuta `run_sql.py`, siguiendo la estructura de la plantilla de la cátedra, en lugar de scripts `.py` sueltos. Cada tabla se guarda como CSV en `dw/`. Las dimensiones usan una clave sustituta (`*_key`) y conservan el id de origen. Los hechos referencian las dimensiones con claves foráneas (FK).
+Las transformaciones están escritas en SQL (`sql/01_dimensiones.sql` y `sql/02_hechos.sql`) y las ejecuta `run_sql.py`, siguiendo la estructura de la plantilla de la cátedra, en lugar de scripts `.py` sueltos. Cada tabla se guarda como CSV en `dw/modelo_estrella/`. Las dimensiones usan una clave sustituta (`*_key`) y conservan el id de origen. Los hechos referencian las dimensiones con claves foráneas (FK).
 
 ### Dimensiones (PK = clave sustituta `*_key`)
 

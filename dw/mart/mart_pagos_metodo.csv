@@ -1,0 +1,5 @@
+metodo,tipo,pagos,fallidos,tasa_fallos,pct_pagos
+Mercado Pago,Electrónico,3093,303,9.8,25.8
+Tarjeta,Electrónico,6561,262,4.0,54.8
+Transferencia,Electrónico,544,0,0.0,4.5
+Efectivo,Efectivo,1771,0,0.0,14.8

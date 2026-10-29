@@ -542,7 +542,7 @@ customer_id,cliente_estado,canal,provincia,comprador,pedidos,recurrente,ventas,f
 541,Activo,Tiendas Físicas,Santa Fe,1,5,1,144570.00,4 o más compras,Resto de clientes
 542,Activo,Tienda Online,Córdoba,1,13,1,365466.00,4 o más compras,Top 20 % de clientes
 543,Activo,Tienda Online,Córdoba,1,15,1,532600.50,4 o más compras,Top 20 % de clientes
-544,Activo,Tiendas Físicas,Mendoza,1,6,1,190560.00,4 o más compras,Resto de clientes
+544,Activo,Tiendas Físicas,Mendoza,1,6,1,190560.00,4 o más compras,Top 20 % de clientes
 545,Activo,Tiendas Físicas,Santa Fe,1,5,1,138943.50,4 o más compras,Resto de clientes
 546,Inactivo,Tiendas Físicas,Mendoza,1,4,1,165528.00,4 o más compras,Resto de clientes
 547,Activo,Tienda Online,Buenos Aires,1,6,1,215632.50,4 o más compras,Top 20 % de clientes
@@ -803,7 +803,7 @@ customer_id,cliente_estado,canal,provincia,comprador,pedidos,recurrente,ventas,f
 802,Activo,Tienda Online,Mendoza,1,2,1,56235.00,2 a 3 compras,Resto de clientes
 803,Activo,Tiendas Físicas,Buenos Aires,1,7,1,258930.00,4 o más compras,Top 20 % de clientes
 804,Inactivo,Tienda Online,Buenos Aires,1,2,1,113730.00,2 a 3 compras,Resto de clientes
-805,Inactivo,Tiendas Físicas,Mendoza,1,5,1,190560.00,4 o más compras,Top 20 % de clientes
+805,Inactivo,Tiendas Físicas,Mendoza,1,5,1,190560.00,4 o más compras,Resto de clientes
 806,Activo,Tienda Online,Buenos Aires,1,3,1,153045.00,2 a 3 compras,Resto de clientes
 807,Activo,Tiendas Físicas,Buenos Aires,1,1,0,58080.00,1 compra,Resto de clientes
 808,Activo,Tiendas Físicas,Mendoza,1,6,1,173136.00,4 o más compras,Resto de clientes

@@ -1,0 +1,11 @@
+provincia,anio,envios_entregados,dias_promedio,es_mas_lenta
+Buenos Aires,2024,1544,4.5,0
+Buenos Aires,2025,1313,3.5,0
+Córdoba,2024,816,6.4,1
+Córdoba,2025,666,5.6,1
+Mendoza,2024,509,6.2,0
+Mendoza,2025,460,5.3,0
+Santa Fe,2024,882,6.3,0
+Santa Fe,2025,666,5.3,0
+Todas,2024,3751,5.5,0
+Todas,2025,3105,4.6,0

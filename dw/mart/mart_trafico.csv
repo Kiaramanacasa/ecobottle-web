@@ -1,0 +1,13 @@
+origen,campania,dispositivo,sesiones,pct_del_origen,pct_total,sesiones_origen
+Directo,Email,Celular,17003,55.8,16.9,30466
+Directo,Email,Computadora,11619,38.1,11.6,30466
+Directo,Email,Tablet,1844,6.1,1.8,30466
+Orgánico,Sin campaña,Celular,14676,55.6,14.6,26417
+Orgánico,Sin campaña,Computadora,10165,38.5,10.1,26417
+Orgánico,Sin campaña,Tablet,1576,6.0,1.6,26417
+Anuncios,Redes sociales,Celular,20157,80.1,20.1,25165
+Anuncios,Redes sociales,Computadora,3720,14.8,3.7,25165
+Anuncios,Redes sociales,Tablet,1288,5.1,1.3,25165
+Referido,Email,Celular,10281,56.1,10.2,18315
+Referido,Email,Computadora,6924,37.8,6.9,18315
+Referido,Email,Tablet,1110,6.1,1.1,18315

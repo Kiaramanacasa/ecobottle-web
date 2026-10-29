@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>EcoBottle AR: tablero comercial</title>
+  <meta name="description" content="Ventas, clientes y operación de EcoBottle AR entre enero de 2024 y septiembre de 2025.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💧</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Unbounded:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <canvas id="burbujas" aria-hidden="true"></canvas>
+
+  <header class="hero">
+    <div class="hero-texto">
+      <p class="marca">EcoBottle AR</p>
+      <h1>Todo lo que vendimos, servido en botellas</h1>
+      <p class="bajada" id="bajada-periodo">Ventas, clientes y operación de la marca.</p>
+      <dl class="kpis" id="kpis"></dl>
+    </div>
+    <figure class="hero-botella" id="hero-botella" aria-labelledby="hero-leyenda"></figure>
+  </header>
+
+  <main>
+    <section class="bloque" id="gondola">
+      <div class="bloque-intro">
+        <h2>La góndola de los meses</h2>
+        <p>Cada botella es un mes. Se llena según lo que se vendió, comparado con el mejor mes del período. El azul profundo es la tienda online y el celeste, las tiendas físicas.</p>
+      </div>
+      <div class="gondola-marco">
+        <div class="gondola" id="gondola-botellas" role="list"></div>
+      </div>
+      <p class="hallazgo" id="hallazgo-gondola"></p>
+    </section>
+
+    <section class="bloque dos-columnas" id="donde">
+      <div>
+        <h2>Por provincia</h2>
+        <p class="nota">Cada caño se llena según las ventas de la provincia, comparadas con la que más vende.</p>
+        <ol class="canos" id="provincias"></ol>
+      </div>
+      <div>
+        <h2>Producto del mes</h2>
+        <p class="nota">Mové la perilla o tocá reproducir para recorrer los meses.</p>
+        <div class="duelo" id="duelo"></div>
+        <div class="control-mes">
+          <button type="button" class="boton-play" id="play" aria-label="Reproducir los meses">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path class="icono-play" d="M8 5v14l11-7z"/><path class="icono-pausa" d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>
+          </button>
+          <input type="range" id="mes-slider" min="0" max="0" value="0" aria-label="Mes">
+          <output id="mes-label" for="mes-slider"></output>
+        </div>
+      </div>
+    </section>
+
+    <section class="bloque" id="satisfaccion">
+      <div class="bloque-intro">
+        <h2>La línea de flotación del NPS</h2>
+        <p>El NPS de cada mes es el porcentaje de promotores menos el de detractores. Pasá por los puntos para ver cómo se compone.</p>
+      </div>
+      <div class="grafico-nps" id="nps"></div>
+      <p class="hallazgo" id="hallazgo-nps"></p>
+    </section>
+
+    <section class="bloque" id="operacion">
+      <div class="bloque-intro">
+        <h2>Operación</h2>
+        <p>Dónde se pierde agua: los cobros que fallan, de dónde llega el tráfico y cuánto tarda un envío.</p>
+      </div>
+      <div class="tres-paneles">
+        <article class="panel">
+          <h3>Pagos que fallan</h3>
+          <ul class="goteo" id="pagos"></ul>
+          <p class="hallazgo chico" id="hallazgo-pagos"></p>
+        </article>
+        <article class="panel">
+          <h3>Desde qué dispositivo llega cada visita</h3>
+          <div class="leyenda" id="leyenda-trafico"></div>
+          <ul class="apiladas" id="trafico"></ul>
+          <p class="hallazgo chico" id="hallazgo-trafico"></p>
+        </article>
+        <article class="panel">
+          <h3>Días hasta la entrega</h3>
+          <div class="leyenda" id="leyenda-entregas"></div>
+          <ul class="mancuernas" id="entregas"></ul>
+          <p class="hallazgo chico" id="hallazgo-entregas"></p>
+        </article>
+      </div>
+    </section>
+
+    <section class="bloque" id="clientes">
+      <div class="bloque-intro">
+        <h2>Clientes y ventas netas</h2>
+        <p>Pocos clientes llenan buena parte de la botella. Cada par de barras compara cuántos son con cuánto aportan.</p>
+      </div>
+      <div class="clientes-grid">
+        <div class="comparaciones" id="comparaciones"></div>
+        <div class="iva">
+          <h3 id="iva-titulo"></h3>
+          <div class="gotas" id="gotas" aria-hidden="true"></div>
+          <p class="nota" id="iva-nota"></p>
+          <h3 class="estados-titulo">Cómo terminan los pedidos</h3>
+          <div class="estados" id="estados"></div>
+          <p class="hallazgo chico" id="hallazgo-estados"></p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="pie">
+    <h2>De dónde sale cada número</h2>
+    <ol class="tuberia">
+      <li><strong>raw/</strong><span>CSV de origen, sin tocar</span></li>
+      <li><strong>sql/</strong><span>transformaciones en DuckDB (ELT)</span></li>
+      <li><strong>dw/modelo_estrella/</strong><span>dimensiones y hechos</span></li>
+      <li><strong>dw/mart/</strong><span>marts con las medidas ya calculadas</span></li>
+      <li><strong>web/</strong><span>esta página: lee los marts y los dibuja</span></li>
+    </ol>
+    <p>Esta página no calcula ninguna medida. Totales, porcentajes, rankings y niveles de llenado vienen de <code>sql/05_marts.sql</code>.</p>
+  </footer>
+
+  <div class="tooltip" id="tooltip" role="status" hidden></div>
+  <div class="error-carga" id="error" hidden></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

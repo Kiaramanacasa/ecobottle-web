@@ -1,11 +1,12 @@
 -- =====================================================================
--- 04_tablero.sql — Tablas planas para el dashboard (Looker Studio)
+-- 04_tablero.sql — Marts detallados para el tablero de Data Studio
 -- =====================================================================
--- Looker Studio no relaciona tablas como un modelo estrella, así que
--- desde el DW armamos 3 tablas "listas para graficar" y las exportamos
--- a dw/ como CSV. No forman parte del modelo estrella: se leen de él.
+-- Data Studio no relaciona tablas como un modelo estrella, así que
+-- desde el DW armamos 7 tablas planas "listas para graficar" (una fila
+-- por pedido, sesión, pago, etc.) y las exportamos a dw/mart/ como CSV.
+-- No forman parte del modelo estrella: se leen de él.
 -- Las columnas que comparten (fecha, canal) tienen el mismo nombre en
--- las tres para que los filtros del tablero apliquen a todas.
+-- todas para que los filtros del tablero apliquen a todas.
 -- =====================================================================
 
 
@@ -45,7 +46,7 @@ COPY (
         ON cu.customer_key = i.customer_key
     WHERE o.status IN ('PAID', 'FULFILLED')
     ORDER BY i.order_item_id
-) TO 'dw/tablero_ventas.csv' (HEADER);
+) TO 'dw/mart/tablero_ventas.csv' (HEADER);
 
 
 -- ---------------------------------------------------------------------
@@ -81,7 +82,7 @@ COPY (
     CROSS JOIN dim_channel AS ch
     WHERE ch.code = 'ONLINE'
     ORDER BY w.session_id
-) TO 'dw/tablero_sesiones.csv' (HEADER);
+) TO 'dw/mart/tablero_sesiones.csv' (HEADER);
 
 
 -- ---------------------------------------------------------------------
@@ -111,7 +112,7 @@ COPY (
     JOIN dim_channel AS ch
         ON ch.channel_key = n.channel_key
     ORDER BY n.nps_id
-) TO 'dw/tablero_nps.csv' (HEADER);
+) TO 'dw/mart/tablero_nps.csv' (HEADER);
 
 
 -- ---------------------------------------------------------------------
@@ -149,7 +150,7 @@ COPY (
     LEFT JOIN dim_province AS pr
         ON pr.province_key = o.province_key
     ORDER BY p.payment_id
-) TO 'dw/tablero_pagos.csv' (HEADER);
+) TO 'dw/mart/tablero_pagos.csv' (HEADER);
 
 
 -- ---------------------------------------------------------------------
@@ -184,7 +185,7 @@ COPY (
     LEFT JOIN dim_store AS st
         ON st.store_key = s.store_key
     ORDER BY s.shipment_id
-) TO 'dw/tablero_envios.csv' (HEADER);
+) TO 'dw/mart/tablero_envios.csv' (HEADER);
 
 
 -- ---------------------------------------------------------------------
@@ -261,7 +262,7 @@ COPY (
     LEFT JOIN compras AS co
         ON co.order_id = o.order_id
     ORDER BY o.order_id
-) TO 'dw/tablero_pedidos.csv' (HEADER);
+) TO 'dw/mart/tablero_pedidos.csv' (HEADER);
 
 
 -- ---------------------------------------------------------------------
@@ -348,4 +349,4 @@ COPY (
     LEFT JOIN quintiles AS q
         ON q.customer_key = cu.customer_key
     ORDER BY cu.customer_id
-) TO 'dw/tablero_clientes.csv' (HEADER);
+) TO 'dw/mart/tablero_clientes.csv' (HEADER);
