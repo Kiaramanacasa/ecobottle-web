@@ -209,7 +209,7 @@ function dibujarHero(k, canales) {
   const yOnline = FONDO - nivelOnline * ALTO_UTIL;
   const yTope = FONDO - lleno * ALTO_UTIL;
   const extra = `
-    <text class="etiqueta-botella grande en-claro" x="50" y="${yTope + 31}" text-anchor="middle" font-size="15">${millones(k.ventas_totales)}</text>
+    <text class="etiqueta-botella grande en-claro" x="50" y="${yTope + 31}" text-anchor="middle" font-size="12">${millones(k.ventas_totales)}</text>
     <text class="capa-texto en-claro" x="50" y="${yTope + 43}" text-anchor="middle" font-size="7">ventas totales</text>
     <text class="capa-texto en-claro" x="50" y="${yOnline - 9}" text-anchor="middle" font-size="6.6">${tiendas.canal} ${pct(tiendas.pct_ventas)}</text>
     <text class="capa-texto" x="50" y="${(FONDO + yOnline) / 2 + 3}" text-anchor="middle" font-size="6.6">${online.canal} ${pct(online.pct_ventas)}</text>`;

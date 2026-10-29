@@ -1,6 +1,6 @@
-# EcoBottle AR: data warehouse y tablero comercial
+# EcoBottle AR: data warehouse y visualización comercial
 
-Trabajo final de **Introducción al Marketing Online y los Negocios Digitales**. Con los datos de EcoBottle AR (botellas reutilizables, tienda online y 4 tiendas físicas) se armó un data warehouse con modelo estrella en DuckDB y un tablero en Data Studio (antes Looker Studio).
+Trabajo final de **Introducción al Marketing Online y los Negocios Digitales**. Con los datos de EcoBottle AR (botellas reutilizables, tienda online y 4 tiendas físicas) se armó un data warehouse con modelo estrella en DuckDB y una visualización web hecha con IA en HTML, CSS y JavaScript, publicada con GitHub Pages.
 
 **Visualización web (HTML, CSS y JS):** [kiaramanacasa.github.io/ecobottle-web](https://kiaramanacasa.github.io/ecobottle-web/)
 
@@ -14,9 +14,42 @@ raw/  →  sql/ (ELT en DuckDB)  →  dw/modelo_estrella/  →  dw/mart/  →  w
 
 Los datos de origen (`raw/`) se cargan en DuckDB y se transforman con SQL. El resultado se guarda en `dw/`, que separa el **modelo estrella** (dimensiones y hechos) de los **data marts**, que se leen del modelo estrella. La visualización web lee solo los marts y no calcula ninguna medida: todas vienen calculadas desde SQL.
 
+## Visualización web
+
+Todo se muestra como agua, porque EcoBottle vende botellas: cada botella se llena según un nivel (de 0 a 1) que ya viene calculado en el mart.
+
+**Resumen:** la botella principal son las ventas totales, en capas por canal, con los cuatro KPIs al lado.
+
+![Resumen: ventas totales y KPIs](assets/web_1_resumen.png)
+
+**La góndola de los meses:** una botella por mes, llenada según sus ventas frente al mejor mes. La línea punteada es el mes promedio.
+
+![Góndola de ventas mensuales](assets/web_2_gondola.png)
+
+**Provincias y producto del mes:** ranking de provincias y un duelo entre productos que se recorre mes a mes.
+
+![Provincias y producto del mes](assets/web_3_provincias_productos.png)
+
+**NPS:** la evolución mensual frente al NPS del período completo.
+
+![NPS mensual](assets/web_4_nps.png)
+
+**Operación:** pagos fallidos por medio de pago, tráfico por dispositivo y días hasta la entrega.
+
+![Operación](assets/web_5_operacion.png)
+
+**Clientes y ventas netas:** frecuencia de compra, peso del 20 % de clientes que más compra, recompras, IVA y estados de los pedidos.
+
+![Clientes y ventas netas](assets/web_6_clientes.png)
+
+<details>
+<summary>Versión anterior: tablero en Data Studio</summary>
+
 ![Página 1: Resumen comercial](assets/pagina1_resumen_comercial.png)
 ![Página 2: Clientes y operación](assets/pagina2_clientes_operacion.png)
 ![Página 3: Ventas netas y clientes](assets/pagina3_ventas_netas_clientes.png)
+
+</details>
 
 ## Estructura del repositorio
 
@@ -35,7 +68,7 @@ dw/                salida del data warehouse (CSV):
   mart/                data marts: tablero_* (Data Studio) y mart_* (web)
 web/               visualización: index.html, styles.css y app.js
 index.html         redirige a web/ (portada de GitHub Pages)
-assets/            capturas del tablero, modelo estrella y DER de origen
+assets/            capturas de la web (web_*) y del tablero, modelo estrella y DER de origen
 generator/         programa que creó los datos de raw/ (no hace falta usarlo)
 ```
 
@@ -344,7 +377,7 @@ ORDER BY
 
 ## Hallazgos
 
-Resumen del período completo (ene 2024 a sept 2025). Son los mismos tres hallazgos que figuran al pie de cada página del tablero.
+Resumen del período completo (ene 2024 a sept 2025). Son los mismos hallazgos que muestra la visualización web en cada sección.
 
 ### Resumen comercial
 
