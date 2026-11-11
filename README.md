@@ -309,3 +309,4 @@ Los datos de EcoBottle AR (`raw/`) y la plantilla del proyecto (`run_sql.py` y l
 El diagrama de las tablas de origen (DER):
 
 ![Diagrama entidad-relación de las tablas de origen](assets/DER.png)
+Modificación de prueba para practicar Git y GitHub.
