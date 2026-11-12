@@ -310,3 +310,4 @@ El diagrama de las tablas de origen (DER):
 
 ![Diagrama entidad-relación de las tablas de origen](assets/DER.png)
 Modificación de prueba para practicar Git y GitHub.
+Proyecto actualizado durante la práctica de Git.
