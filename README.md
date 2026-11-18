@@ -1,8 +1,12 @@
 # EcoBottle AR: data warehouse y visualización comercial
 
-Trabajo final de **Introducción al Marketing Online y los Negocios Digitales**. Con los datos de EcoBottle AR (botellas reutilizables, tienda online y 4 tiendas físicas) se armó un data warehouse con modelo estrella en DuckDB y una visualización web hecha con IA en HTML, CSS y JavaScript, publicada con GitHub Pages.
+> ⚠️ **Versión anterior, no se mantiene.** El trabajo final está en
+> [practica-imond](https://github.com/Kiaramanacasa/practica-imond) y la visualización en
+> [kiaramanacasa.github.io/practica-imond](https://kiaramanacasa.github.io/practica-imond/).
 
-**Visualización web (HTML, CSS y JS):** [kiaramanacasa.github.io/ecobottle-web](https://kiaramanacasa.github.io/ecobottle-web/)
+Borrador de la entrega de **Introducción al Marketing Online y los Negocios Digitales**. Con los datos de EcoBottle AR (botellas reutilizables, tienda online y 4 tiendas físicas) se armó un data warehouse con modelo estrella en DuckDB y una visualización web hecha con IA en HTML, CSS y JavaScript, publicada con GitHub Pages.
+
+**Visualización web (HTML, CSS y JS):** [kiaramanacasa.github.io/practica-imond](https://kiaramanacasa.github.io/practica-imond/)
 
 ## Arquitectura
 
